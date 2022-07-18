@@ -1,5 +1,5 @@
 const express = require('express');
-const PORT = process.env.PORT || 3001;  
+const PORT = process.env.PORT || 3001;
 const app = express();
 
 const { animals } = require('./data/animals');
@@ -18,7 +18,7 @@ function filterByQuery(query, animalsArray) {
         } else {
             personalityTraitsArray = query.personalityTraits
         }
-            //loop through each trait in the personalityTraits array;
+        //loop through each trait in the personalityTraits array;
         personalityTraitsArray.forEach(trait => {
             //check the trait against each animal in te filteredResults array.
             //Remember, it is initially a copy of the animalsArray,
@@ -45,6 +45,20 @@ function filterByQuery(query, animalsArray) {
 
 }
 
+function findById(id, animalsArray) {
+    const result = animalsArray.filter(animal => animal.id === id)[0];
+    return result;
+}
+
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals);
+    if (result) {
+        res.json(result);
+    } else {
+        res.send("not here fool");
+    }
+});
+
 app.get('/api/animals', (req, res) => {
     let results = animals;
     if (req.query) {
@@ -54,13 +68,6 @@ app.get('/api/animals', (req, res) => {
 });
 
 
-
-
-// app.get('/api/animals', (req, res) => {
-//     let results = animals;
-//     console.log(req.query)
-//     res.json(results);
-//   });
 
 app.listen(PORT, () => {
     console.log('API server now on port ${PORT}!');
